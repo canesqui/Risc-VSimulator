@@ -8,7 +8,9 @@ export class StageObject {
 
     get Instruction() {
         return this.previousInstruction;
+        //return this.currentInstruction;
     }
+
     set Instruction(value) {        
         this.previousInstruction = JSON.parse(JSON.stringify(this.currentInstruction));
         this.currentInstruction = value;

@@ -17,7 +17,39 @@ export class StageIdEx extends StageObject {
     get ReadData2(){
         return this.readData2;
     }
+    
+    set Func3(value){
+        this.func3 = value;
+    }
 
+    get Func3(){
+        return this.func3;
+    }
+
+    set Branch(value){
+        this.branch = value;
+    }
+
+    get Branch(){
+        return this.branch;
+    }
+        
+    set MemWrite(value){
+        this.memWrite = value;
+    }
+
+    get MemWrite(){
+        return this.memWrite;
+    }
+
+    set MemRead(value){
+        this.memRead = value;
+    }
+
+    get MemRead(){
+        return this.memRead;
+    }
+    /*
     set Rs1(value){
         this.rs1 = value;
     }
@@ -32,6 +64,23 @@ export class StageIdEx extends StageObject {
 
     get Rs2(){
         return this.rs2;
+    }
+    */
+
+    set ALUSrc(value){
+        this.aluSrc = value;
+    }
+
+    get ALUSrc(){
+        return this.aluSrc;
+    }
+
+    set ALUOp(value){
+        this.aluOp = value;
+    }
+
+    get ALUOp(){
+        return this.aluOp;
     }
 
     set Rd(value){
