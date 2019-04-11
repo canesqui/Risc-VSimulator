@@ -13,6 +13,7 @@ import { RegisterFile } from './registerfile.mjs';
 import { Mux } from './Mux.mjs';
 
 import * as ui from './ui.mjs';
+import { DataMemory } from './datamemory.mjs';
 
 window.pubsub = new PubSub();
 var pc = new ProgramCounter();
@@ -31,6 +32,7 @@ var exMemStageObject = new StageExMem();
 var memWbStageObject = new StageMemWb();
 var registerFile = new RegisterFile();
 var idExMux = new Mux();
+var dataMemory = new DataMemory();
 
 let c = document.getElementById("datapath");
 let ctx = c.getContext("2d");
@@ -38,6 +40,10 @@ let ctx = c.getContext("2d");
 function step() {
     window.pubsub.publish('clock', { tick: "tick" });
 }
+
+dataMemory.WriteData("00001000",12345678);
+dataMemory.ReadData("00001000");
+console.log(dataMemory);
 
 document.getElementById("step").addEventListener("click", function () { step() });
 ui.loadBackground(ctx, c.width, c.height);
@@ -61,6 +67,8 @@ pubsub.subscribe('clock', function (obj) {
         }
     }
     pc.set(aluPc.Operation('Add', 4, pc.get()));    
+
+
 });
 
 pubsub.subscribe('clock', function (obj) {
