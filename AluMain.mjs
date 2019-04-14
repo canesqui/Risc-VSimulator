@@ -30,10 +30,10 @@ export class AluMain extends Alu {
         
         switch (operationType) {
             case 'Add':                
-                console.log("AluMain");                
-                this.result.Res = Number(inputA)+Number(inputB);                
+                //console.log("AluMain");                
+                this.result.Res = inputA+inputB;                
                 this.result.Zero = 0;
-                console.log(this.result);
+                //console.log(this.result);
                 return this.result;
 
             case 'Sub':

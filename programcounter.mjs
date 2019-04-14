@@ -1,3 +1,4 @@
+import * as convert from './convertBase.js';   
 export class ProgramCounter {
     
     constructor() {  
@@ -12,7 +13,7 @@ export class ProgramCounter {
 
     get(){        
         if(this.reset){                        
-            return 400000;
+            return convert.dec2bin(400000);
         }else{
             return this.pc;
         }

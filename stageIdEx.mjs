@@ -2,6 +2,14 @@ import { StageObject } from './stageobject.mjs';
 
 export class StageIdEx extends StageObject {
     
+    set Instruction64(value){
+        this.instruction64 = value;
+    }
+
+    get Instruction64(){
+        return this.instruction64;
+    }
+
     set ReadData1(value){
         this.readData1 = value;
     }
@@ -49,6 +57,15 @@ export class StageIdEx extends StageObject {
     get MemRead(){
         return this.memRead;
     }
+
+    set MemToReg(value){
+        this.memToReg = value;
+    }
+
+    get MemToReg(){
+        return this.memToReg;
+    }
+    
     /*
     set Rs1(value){
         this.rs1 = value;

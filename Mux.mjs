@@ -1,43 +1,52 @@
 export class Mux {
 
-    constructor() {
+    constructor(defaultSelectorValue) {
         this.sourceZero = "";
         this.sourceOne = "";
-        this.muxSelector = "";   
-        this.result = "";     
+        this.muxSelector = defaultSelectorValue;
+        this.result = "";
     }
 
-    set SourceZero(value){
-        this.Execute();
+    set SourceZero(value) {        
         this.sourceZero = value;
     }
 
-    set SourceOne(value){
-        this.Execute();
+    set SourceOne(value) {        
         this.sourceOne = value;
     }
 
-    set MuxSelector(value){
-        this.Execute();
+    set MuxSelector(value) {        
         this.muxSelector = value;
     }
 
-    Execute(){
-        if (this.sourceOne!==""&&
-            this.sourceZero!==""&&
-            this.muxSelector!==""){
-                switch(this.muxSelector){
-                    case "0":
-                        return this.sourceZero;
-                    case "1":
-                        return this.sourceOne;
-                    default:
-                        return undefined;
-                }
-            }
+    Execute() {
+        //console.log("Mux execute: Mux Selector");
+        //console.log(this.muxSelector);
+        //console.log("Mux source zero");
+        //console.log(this.sourceZero);
+        //console.log("Mux source one");
+        //console.log(this.sourceOne);
+
+        switch (this.muxSelector) {
+            case 0: 
+                //console.log("Mux Selector Zero");
+                this.result = this.sourceZero;
+                break;
+            case 1:
+                //console.log("Mux Selector One");
+                this.result = this.sourceOne;
+                break;
+            default:
+                //console.log("Mux Selector default");                
+                this.result = undefined;
+                break;
+        }
     }
 
-    get Result(){
+    get Result() {
+        this.Execute();
+        //console.log("Mux result");
+        //console.log(this.result);
         return this.result;
-    }        
+    }
 }

@@ -3,7 +3,8 @@ import * as convert from './convertBase.js';
     export function loadBackground(context, width, height) {                
         let imageData;
         let background = new Image();
-        background.src = "./Images/backgound.png";
+        //background.src = "./Images/backgound.png";
+        background.src = "./Images/bitmap.png";
         background.onload = function () {
             console.log("Onload");
             context.drawImage(background, 0, 0);
@@ -18,12 +19,15 @@ import * as convert from './convertBase.js';
     export function writeStageInstruction(context, instruction, format, x, y, highlight) {
         let convertedInstruction;
         switch (format) {
-            case 'asm':
+            case 'none':
                 convertedInstruction = instruction;
                 break;
             case 'hex':                
                 convertedInstruction = convert.bin2hex(instruction);
                 break;
+            case 'hex-short':                
+                convertedInstruction = convert.bin2hexshort(instruction);
+                break;    
             case 'bin':
                 convertedInstruction = instruction;
                 break;              
@@ -33,13 +37,14 @@ import * as convert from './convertBase.js';
         if (highlight==="true"){
             text(context, convertedInstruction, "white", x, y);
         }else{
-            text(context, convertedInstruction, "black", x, y);
+            text(context, convertedInstruction, "gray", x, y);
         }          
     }            
 
     export function text(context, text, color, x, y) {
-        context.font = "15px Arial";        
+        context.font = "18px sans-serif";                
         context.fillStyle = color;
+        //contenxt.font-weight("bold");
         context.fillText(text, x, y);
     }
 

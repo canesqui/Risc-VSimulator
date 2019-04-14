@@ -4,14 +4,27 @@ export class InstructionMemory {
     
     constructor() {  
         this.memory= [];
-        for (var i=0;i<=5000;i++){
+        //00000000011100110000001010110011
+        //00000000101001001000010000110011
+        //00000000110101100000010110110011
+        
+        //00000001000001111000011100110011
+        //00000001001110010000100010110011
+
+        this.memory.push("00000000011100110000001010110011");
+        this.memory.push("00000000101001001000010000110011");
+        this.memory.push("00000000110101100000010110110011");
+        this.memory.push("00000001000001111000011100110011");
+        this.memory.push("00000001001110010000100010110011");
+
+        for (var i=5;i<=5000;i++){
             this.memory.push(convert.dec2bin(i.toString().padStart(32,0)));        
         }        
     }
 
     get(memoryOffSet) {
         //console.log('IM memory offset '+ memoryOffSet);
-        let index = (Number(memoryOffSet)-400000);
+        let index = (convert.bin2dec(memoryOffSet)-400000);
         //console.log('IM '+index);
         index = (index>0) ? index/4: 0;
         //console.log('IM after calc '+index);

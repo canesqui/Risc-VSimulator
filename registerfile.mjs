@@ -5,7 +5,7 @@ export class RegisterFile {
     constructor() {
         this.data = new Array(32);
         for(let i=0;i<32;i++){
-            this.data[i] = 0;
+            this.data[i] = convert.dec2bin(1000+i);
         }
         this.writeRegister = "";
         this.writeData = "";
@@ -15,24 +15,25 @@ export class RegisterFile {
     Data(register){
         console.log("Register File Data method");
         console.log(register);
-        console.log(convert.bin2dec(register));
-        console.log(this.data[1]);
+        console.log(convert.bin2dec(register));        
         let arrayIndex = convert.bin2dec(register);
+        console.log(arrayIndex);
+        console.log(this.data[arrayIndex]);
         return this.data[arrayIndex];
     }
 
-    set WriteData(register){
-        ExecWrite();
-        this.writeData = register;
+    set WriteData(data){
+        this.ExecWrite();
+        this.writeData = data;
     }
 
     set WriteRegister(register){
-        ExecWrite();
+        this.ExecWrite();
         this.writeRegister = register;
     }
 
     set RegWrite(value){
-        ExecWrite();
+        this.ExecWrite();
         this.regWrite = value;
     }
 
