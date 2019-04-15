@@ -3,26 +3,29 @@ import { StageObject } from './stageobject.mjs';
 export class StageMemWb extends StageObject {
 
     set ReadData(value){
-        this.readData = value;
+        this.previousReadData = this.currentReadData;
+        this.currentReadData = value;
     }
 
     get ReadData(){
-        return this.readData;
+        return this.previousReadData;
     }
 
     set ALUResult(value){
-        this.aluResult = value;
+        this.previousALUResult = this.currentALUResult;
+        this.currentALUResult = value;
     }
 
     get ALUResult(){
-        return this.aluResult;
+        return this.previousALUResult;
     }
 
     set Rd(value){
-        this.rd = value;
+        this.previousRd = this.currentRd;
+        this.currentRd = value;
     }
 
     get Rd(){
-        return this.rd;
+        return this.previousRd;
     }
 }
