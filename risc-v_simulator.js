@@ -224,15 +224,6 @@ pubsub.subscribe('reset', function (obj) {
     pc.reset();
 });
 
-/*
-pubsub.subscribe('pc', function (obj) {
-    console.log('pc chanel');
-    pc.set(aluPc.operation('Add', 4, obj));
-    console.log(instructionMemory.get(obj));
-    ifIdPipelineStage.set(instructionMemory.get(obj));
-    // = instructionMemory.get(obj)
-});
-*/
 
 
 
