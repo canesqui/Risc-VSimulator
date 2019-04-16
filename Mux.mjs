@@ -20,24 +20,24 @@ export class Mux {
     }
 
     Execute() {
-        //console.log("Mux execute: Mux Selector");
-        //console.log(this.muxSelector);
-        //console.log("Mux source zero");
-        //console.log(this.sourceZero);
-        //console.log("Mux source one");
-        //console.log(this.sourceOne);
+        console.log("Mux execute: Mux Selector");
+        console.log(this.muxSelector);
+        console.log("Mux source zero");
+        console.log(this.sourceZero);
+        console.log("Mux source one");
+        console.log(this.sourceOne);
 
-        switch (this.muxSelector) {
+        switch (Number(this.muxSelector)) {
             case 0: 
-                //console.log("Mux Selector Zero");
+                console.log("Mux Selector Zero");
                 this.result = this.sourceZero;
                 break;
             case 1:
-                //console.log("Mux Selector One");
+                console.log("Mux Selector One");
                 this.result = this.sourceOne;
                 break;
             default:
-                //console.log("Mux Selector default");                
+                console.log("Mux Selector default");                
                 this.result = undefined;
                 break;
         }

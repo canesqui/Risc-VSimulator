@@ -48,12 +48,12 @@ document.getElementById("step").addEventListener("click", function () { step() }
 ui.loadBackground(ctx, c.width, c.height);
 let format = 'hex'; //asm, hex or bin
 pubsub.subscribe('clock', function (obj) {
-    ifIdStageObject.Pc = pc.get();    
+    ifIdStageObject.Pc = pc.get();
     let inst = instructionMemory.get(pc.get());
     ifIdStageObject.Instruction = inst;
     ui.resetCanvas(ctx);
     ui.writeStageInstruction(ctx, inst, format, 100, 50);
-            
+
     //Show last 5 instructions
     let instructionCount = Number(convert.bin2dec(pc.get())) - 12;
     let position = 490;
@@ -127,7 +127,7 @@ pubsub.subscribe('ifid', function (obj) {
         idExStageObject.MemWrite = "0";
         idExStageObject.MemRead = "1";
         idExStageObject.MemToReg = "0";
-        
+
         //Pc
         ui.writeStageInstruction(ctx, obj.Pc, "hex-short", 793, 275);
         //Rs1
@@ -145,7 +145,7 @@ pubsub.subscribe('ifid', function (obj) {
     }
 });
 
-pubsub.subscribe('idex', function (obj) {        
+pubsub.subscribe('idex', function (obj) {
     if (obj.Instruction !== "") {
         //console.log("Hello from subscriber idex");
         //console.log(obj.Instruction);
@@ -192,7 +192,7 @@ pubsub.subscribe('idex', function (obj) {
         ui.writeStageInstruction(ctx, obj.Rd, "hex-short", 1203, 798);
         //Funct3
         ui.writeStageInstruction(ctx, obj.Funct3, "hex-short", 940, 732);
-        
+
 
         //pubsub.publish('exmem', exMemStageObject); 
     }
@@ -209,7 +209,7 @@ pubsub.subscribe('exmem', function (obj) {
         memWbStageObject.ALUResult = obj.ALUResult;
         //memWbStageObject.ALUResult = obj.ALUResult;
         let dataResult = dataMemory.ReadData(obj.ALUResult);
-        console.log(dataMemory);    
+        console.log(dataMemory);
         if (obj.MemWrite == "1") {
             dataMemory.WriteData(obj.ALUResult, obj.ReadData2);
         }
@@ -230,6 +230,8 @@ pubsub.subscribe('exmem', function (obj) {
         ui.writeStageInstruction(ctx, obj.ReadData2, "hex-short", 1356, 663);
         //ReadData
         ui.writeStageInstruction(ctx, dataResult, "hex-short", 1603, 530);
+        //Rd
+        ui.writeStageInstruction(ctx, obj.Rd, "hex-short", 1603, 798);
 
     }
 });
@@ -240,10 +242,21 @@ pubsub.subscribe('memwb', function (obj) {
         //console.log(obj.Instruction);
         ui.writeStageInstruction(ctx, obj.Instruction, format, 1700, 50);
         memWbMux.SourceOne = obj.ReadData;
-        memWbMux.SourceZero = obj.ALUResult;
+        memWbMux.SourceZero = obj.ALUResult;        
         memWbMux.MuxSelector = obj.MemToReg;
         registerFile.WriteRegister = obj.Rd;
         registerFile.WriteData = memWbMux.Result;
+
+
+        //ALUResult
+        ui.writeStageInstruction(ctx, obj.ALUResult, "hex-short", 1776, 633);
+        //ReadData
+        ui.writeStageInstruction(ctx, obj.ReadData, "hex-short", 1753, 525);
+        //Rd
+        ui.writeStageInstruction(ctx, obj.Rd, "hex-short", 1753, 798);
+        //Mux result
+        ui.writeStageInstruction(ctx, memWbMux.Result, "hex-short", 1856, 558);
+
     }
 });
 
