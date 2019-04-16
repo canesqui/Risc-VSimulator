@@ -13,12 +13,12 @@ export class RegisterFile {
     }
 
     Data(register){
-        console.log("Register File Data method");
-        console.log(register);
-        console.log(convert.bin2dec(register));        
+        //console.log("Register File Data method");
+        //console.log(register);
+        //console.log(convert.bin2dec(register));        
         let arrayIndex = convert.bin2dec(register);
-        console.log(arrayIndex);
-        console.log(this.data[arrayIndex]);
+        //console.log(arrayIndex);
+        //console.log(this.data[arrayIndex]);
         return this.data[arrayIndex];
     }
 

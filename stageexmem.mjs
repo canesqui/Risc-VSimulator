@@ -56,6 +56,15 @@ export class StageExMem extends StageObject {
         return this.previousALUResult;
     }
 
+    set ReadData2(value){
+        this.previousReadData2 = this.currentReadData2;
+        this.currentReadData2 = value;
+    }
+
+    get ReadData2(){
+        return this.previousReadData2;
+    }
+
     set Rs2(value){
         this.previousRs2 = this.currentRs2;
         this.currentRs2 = value;

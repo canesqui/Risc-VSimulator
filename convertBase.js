@@ -38,6 +38,6 @@
     };
 
     export function to64(num){
-        return num.padStart(64,0);
+        return num.toString().padStart(64,0);
     }
         

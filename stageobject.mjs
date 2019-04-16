@@ -2,8 +2,7 @@ export class StageObject {
 
     constructor() {
         this.currentInstruction = "";                    
-        this.previousInstruction = ""; 
-        this.pc = 0;
+        this.previousInstruction = "";         
     }
 
     get Instruction() {
@@ -12,15 +11,16 @@ export class StageObject {
     }
 
     set Instruction(value) {        
-        this.previousInstruction = JSON.parse(JSON.stringify(this.currentInstruction));
+        this.previousInstruction = this.currentInstruction;
         this.currentInstruction = value;
     }
     
     get Pc() {
-        return this.pc;
+        return this.previousPc;
     }
     set Pc(value) {
-        this.pc = value;
+        this.previousPc = this.currentPc;
+        this.currentPc = value;
     }
     
 }

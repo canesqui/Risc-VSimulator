@@ -1,3 +1,5 @@
+import * as convert from './convertBase.js';
+
 import { Alu } from './Alu.mjs';
 
 class Result {
@@ -25,28 +27,27 @@ export class AluMain extends Alu {
         this.result.Zero = "";
     }
 
-
     Operation(operationType, inputA, inputB) {
         
         switch (operationType) {
             case 'Add':                
                 //console.log("AluMain");                
-                this.result.Res = inputA+inputB;                
+                this.result.Res = convert.dec2bin(Number(convert.bin2dec(inputA))+Number(convert.bin2dec(inputB)));;                
                 this.result.Zero = 0;
                 //console.log(this.result);
                 return this.result;
 
             case 'Sub':
-                this.result.Res = Number(inputA)-Number(inputB);                
+                this.result.Res = convert.dec2bin(Number(convert.bin2dec(inputA))-Number(convert.bin2dec(inputB)));;                
                 this.result.Zero = 0;
                 return this.result;
                 //break;
             case 'Mult':
-                this.result.Res =  Number(inputA)*Number(inputB);
+                this.result.Res =  convert.dec2bin(Number(convert.bin2dec(inputA))*Number(convert.bin2dec(inputB)));;
                 this.result.Zero = 0;
                 return this.result;
             case 'Div':
-                this.result.Res =  Number(inputA)/Number(inputB);
+                this.result.Res =  convert.dec2bin(Number(convert.bin2dec(inputA))/Number(convert.bin2dec(inputB)));;
                 this.result.Zero = 0;
                 return this.result;
             default:

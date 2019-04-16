@@ -28,9 +28,12 @@ import * as convert from './convertBase.js';
             case 'hex-short':                
                 convertedInstruction = convert.bin2hexshort(instruction);
                 break;    
+            case 'dec':
+                convertedInstruction = convert.bin2dec(instruction);
+                break;  
             case 'bin':
                 convertedInstruction = instruction;
-                break;              
+                break;             
             default:
                 convertedInstruction = instruction;
           }
