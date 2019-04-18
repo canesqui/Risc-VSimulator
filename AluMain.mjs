@@ -1,6 +1,5 @@
 import * as convert from './convertBase.js';
 
-import { Alu } from './Alu.mjs';
 
 class Result {
     set Zero(value){
@@ -17,41 +16,62 @@ class Result {
     }
 
 }
-
-export class AluMain extends Alu {
+export class AluMain  {
 
     constructor() {
-        super();
         this.result = new Result();
         this.result.Res = "";
         this.result.Zero = "";
     }
 
-    Operation(operationType, inputA, inputB) {
+    Operation(aluControl, inputA, inputB) {
         
-        switch (operationType) {
-            case 'Add':                
-                //console.log("AluMain");                
-                this.result.Res = convert.dec2bin(Number(convert.bin2dec(inputA))+Number(convert.bin2dec(inputB)));;                
-                this.result.Zero = 0;
-                //console.log(this.result);
-                return this.result;
-
-            case 'Sub':
-                this.result.Res = convert.dec2bin(Number(convert.bin2dec(inputA))-Number(convert.bin2dec(inputB)));;                
+        switch (aluControl) {
+            //Add  
+            case '0000':
+                this.result.Res = convert.dec2bin(Number(convert.bin2dec(inputA)) + Number(convert.bin2dec(inputB)));
                 this.result.Zero = 0;
                 return this.result;
-                //break;
-            case 'Mult':
-                this.result.Res =  convert.dec2bin(Number(convert.bin2dec(inputA))*Number(convert.bin2dec(inputB)));;
+            //Sll    
+            case '0001':
+                this.result.Res = convert.dec2bin(Number(convert.bin2dec(inputA)) << Number(convert.bin2dec(inputB)));
                 this.result.Zero = 0;
                 return this.result;
-            case 'Div':
-                this.result.Res =  convert.dec2bin(Number(convert.bin2dec(inputA))/Number(convert.bin2dec(inputB)));;
-                this.result.Zero = 0;
-                return this.result;
+            //A<B?1:0    
+            case '0010':
+                return (Number(convert.bin2dec(inputA)) < Number(convert.bin2dec(inputB)) ? 1 : 0);
+            //Xor    
+            case '0011':
+                return (inputA ^ inputB);
+            //Srl    
+            case '1101':
+                return convert.dec2bin(Number(convert.bin2dec(inputA)) >> Number(convert.bin2dec(inputB)));
+            //Or    
+            case '0101':
+                return convert.dec2bin(Number(convert.bin2dec(inputA)) | Number(convert.bin2dec(inputB)));
+            //And   
+            case '0110':
+                return convert.dec2bin(Number(convert.bin2dec(inputA)) & Number(convert.bin2dec(inputB)));
+            //Sub-beq   
+            case '0111':
+                return (Number(convert.bin2dec(inputA)) - Number(convert.bin2dec(inputB))) == 0 ? 1 : 0;
+            //Sub-bne   
+            case '1000':
+                return (Number(convert.bin2dec(inputA)) - Number(convert.bin2dec(inputB))) !== 0 ? 1 : 0;
+            //Sub-blt,sub-bltu   
+            case '1001':
+                return (Number(convert.bin2dec(inputA)) < Number(convert.bin2dec(inputB))) ? 1 : 0;
+            //Sub-bge,sub-bgeu   
+            case '1010':
+                return (Number(convert.bin2dec(inputA)) >= Number(convert.bin2dec(inputB))) ? 1 : 0;
+            //Sub-bge,sub-bgeu   
+            case '1011':
+                return inputB.subString(0, 32);
+            //Sub   
+            case '1110':
+                return convert.dec2bin(Number(convert.bin2dec(inputA)) - Number(convert.bin2dec(inputB)));  
             default:
-                return this.result;
+                return 0;
         }
     }   
 }

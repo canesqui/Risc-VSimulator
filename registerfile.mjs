@@ -41,11 +41,13 @@ export class RegisterFile {
         if(this.writeData !=="" && 
             this.writeRegister !== "" &&
             this.regWrite !== ""){
-                let arrayIndex = convert.bin2dec(writeRegister);
+                let arrayIndex = convert.bin2dec(this.writeRegister);
                 this.data[arrayIndex] = this.writeData;
                 this.writeData = "";
                 this.writeRegister = "";
                 this.regWrite = "";
+                console.log("Register Content");
+                console.log(this.data);
             }
 
     } 

@@ -2,7 +2,6 @@
 import { PubSub } from './pubsub.mjs';
 import { ProgramCounter } from './programcounter.mjs';
 import { InstructionMemory } from './InstructionMemory.mjs';
-import { Alu } from './Alu.mjs';
 import { AluMain } from './AluMain.mjs';
 import { PipelineStage } from './pipelinestage.mjs';
 import { StageObject } from './stageobject.mjs';
@@ -14,13 +13,15 @@ import { Mux } from './Mux.mjs';
 import { DataMemory } from './datamemory.mjs';
 import * as convert from './convertBase.js';
 import * as ui from './ui.mjs';
+import * as ctrl from './ALUControl.mjs';
+import * as util from './Alu.mjs';
 
 window.pubsub = new PubSub();
 var pc = new ProgramCounter();
 var instructionMemory = new InstructionMemory();
-var aluPc = new Alu();
+//var aluPc = new Alu();
 var aluMain = new AluMain();
-var aluIdEx = new Alu();
+//var aluIdEx = new Alu();
 
 //var ifIdPipelineStage = new PipelineStage();
 //var ifExPipelineStage = new PipelineStage();
@@ -70,7 +71,7 @@ pubsub.subscribe('clock', function (obj) {
 
     //console.log("PC Get");
     //console.log(pc.get());  
-    ifMux.SourceZero = aluPc.Operation('Add', convert.dec2bin(4), pc.get());
+    ifMux.SourceZero = util.AluAdder(convert.dec2bin(4), pc.get());
     //console.log("ifMux Result");
     //console.log(convert.bin2dec(ifMux.Result));
     pc.set(ifMux.Result);
@@ -97,6 +98,12 @@ pubsub.subscribe('ifid', function (obj) {
     if (obj.Instruction !== "") {
         ui.writeStageInstruction(ctx, obj.Instruction, format, 500, 50);
         idExStageObject.Instruction = obj.Instruction;
+
+        //TODO: Create the control component and wire accordingly
+        var aluControlResult = ctrl.Control(obj.Instruction.substring(25,32));
+        console.log(aluControlResult);
+        registerFile.RegWrite = aluControlResult.RegWrite;
+
         //console.log("ifid");
         //console.log(obj.Instruction);        
         idExStageObject.Pc = obj.Pc;
@@ -104,7 +111,7 @@ pubsub.subscribe('ifid', function (obj) {
         let readRegister1 = obj.Instruction.substring(12, 17);
         let readRegister2 = obj.Instruction.substring(7, 12);
         let readDestination = obj.Instruction.substring(20, 25);
-        let funct3 = obj.Instruction.substring(17, 20);
+        let funct3 = obj.Instruction.substring(1,2)+obj.Instruction.substring(17, 20);
         let readData1 = registerFile.Data(readRegister1);
         let readData2 = registerFile.Data(readRegister2);
         //Rs1    
@@ -118,18 +125,17 @@ pubsub.subscribe('ifid', function (obj) {
 
         //Imm generator
         idExStageObject.Instruction64 = convert.to64(obj.Instruction);
-
-
-        //TODO: Create the control component and wire accordingly
-        idExStageObject.ALUSrc = "0";
-        idExStageObject.ALUOp = "0";
-        idExStageObject.Branch = "0";
-        idExStageObject.MemWrite = "0";
-        idExStageObject.MemRead = "1";
-        idExStageObject.MemToReg = "0";
-
+        
+        idExStageObject.ALUSrc = aluControlResult.ALUSrc;
+        idExStageObject.ALUOp = aluControlResult.ALUOp;            
+        idExStageObject.Branch = aluControlResult.Branch;
+        idExStageObject.MemWrite = aluControlResult.MemWrite;
+        idExStageObject.MemRead = aluControlResult.MemRead;
+        idExStageObject.MemToReg = aluControlResult.MemToReg;
+        idExStageObject.RegWrite = aluControlResult.RegWrite;
+                
         //Pc
-        ui.writeStageInstruction(ctx, obj.Pc, "hex-short", 793, 275);
+        ui.writeStageInstruction(ctx, obj.Pc, "hex-short", 773, 192);
         //Rs1
         ui.writeStageInstruction(ctx, readRegister1, "hex-short", 550, 455);
         //Rs2
@@ -154,30 +160,33 @@ pubsub.subscribe('idex', function (obj) {
         exMemStageObject.Pc = obj.Pc;
         idExMux.SourceZero = obj.ReadData2;
         idExMux.SourceOne = obj.Instruction.substring(0, 7);
-        idExMux.MuxSelector = 0;
+        idExMux.MuxSelector = obj.ALUSrc;
+        let aluControl = ctrl.ALUControl(obj.Funct3, obj.ALUOp);
+
         //Main Alu
-        let aluMainResult = aluMain.Operation("Add", obj.ReadData1, idExMux.Result);
+        let aluMainResult = aluMain.Operation(aluControl, obj.ReadData1, idExMux.Result);
 
         exMemStageObject.ALUResult = aluMainResult.Res;
         exMemStageObject.Zero = aluMainResult.Zero;
         exMemStageObject.ReadData2 = obj.ReadData2;
         exMemStageObject.Rd = obj.Rd;
-        exMemStageObject.Branch = idExStageObject.Branch;
-        exMemStageObject.MemWrite = idExStageObject.MemWrite;
-        exMemStageObject.MemRead = idExStageObject.MemRead;
-        exMemStageObject.MemToReg = idExStageObject.MemToReg;
+        exMemStageObject.Branch = obj.Branch;/*idExStageObject.Branch;*/
+        exMemStageObject.MemWrite = obj.MemWrite;/*idExStageObject.MemWrite;*/
+        exMemStageObject.MemRead = obj.MemRead;/*idExStageObject.MemRead;*/
+        exMemStageObject.MemToReg = obj.MemToReg;/*idExStageObject.MemToReg;*/        
+        exMemStageObject.RegWrite = obj.RegWrite;
 
         let imm = obj.Instruction64.substring(7, 12);
         //shift left 1 + add sum 
-        let jumpBranchAddResult = aluIdEx.Operation("Add", obj.Pc, imm << 1);
+        let jumpBranchAddResult = util.AluAdder(obj.Pc, imm << 1);
         exMemStageObject.JumpBranchAddResult = jumpBranchAddResult;
 
         //Pc
-        ui.writeStageInstruction(ctx, obj.Pc, "hex-short", 968, 275);
+        ui.writeStageInstruction(ctx, obj.Pc, "hex-short", 933, 192);
         //Imm
-        ui.writeStageInstruction(ctx, imm, "hex-short", 990, 357);
+        ui.writeStageInstruction(ctx, imm, "hex-short", 975, 273);
         //JumpBranchAddResult
-        ui.writeStageInstruction(ctx, jumpBranchAddResult, "hex-short", 1210, 315);
+        ui.writeStageInstruction(ctx, jumpBranchAddResult, "hex-short", 1210, 230);
         //ReadData1        
         ui.writeStageInstruction(ctx, obj.ReadData1, "hex-short", 1030, 470);
         //Mux result
@@ -218,6 +227,7 @@ pubsub.subscribe('exmem', function (obj) {
         }
 
         memWbStageObject.MemToReg = obj.MemToReg;
+        memWbStageObject.RegWrite = obj.RegWrite;
         ifMux.SourceOne = obj.JumpBranchAddResult;
         //branch    
         ifMux.MuxSelector = obj.Zero & obj.Branch;
@@ -246,16 +256,16 @@ pubsub.subscribe('memwb', function (obj) {
         memWbMux.MuxSelector = obj.MemToReg;
         registerFile.WriteRegister = obj.Rd;
         registerFile.WriteData = memWbMux.Result;
-
+        registerFile.RegWrite = obj.RegWrite;
 
         //ALUResult
-        ui.writeStageInstruction(ctx, obj.ALUResult, "hex-short", 1776, 633);
+        ui.writeStageInstruction(ctx, obj.ALUResult, "hex-short", 1716, 633);
         //ReadData
-        ui.writeStageInstruction(ctx, obj.ReadData, "hex-short", 1753, 525);
+        ui.writeStageInstruction(ctx, obj.ReadData, "hex-short", 1683, 527);
         //Rd
-        ui.writeStageInstruction(ctx, obj.Rd, "hex-short", 1753, 798);
+        ui.writeStageInstruction(ctx, obj.Rd, "hex-short", 1703, 798);
         //Mux result
-        ui.writeStageInstruction(ctx, memWbMux.Result, "hex-short", 1856, 558);
+        ui.writeStageInstruction(ctx, memWbMux.Result, "hex-short", 1790, 558);
 
     }
 });

@@ -38,6 +38,15 @@ export class StageIdEx extends StageObject {
         return this.previousFunct3;
     }
 
+    set RegWrite(value){
+        this.previousRegWrite = this.currentRegWrite;
+        this.currentRegWrite = value;
+    }
+
+    get RegWrite(){
+        return this.previousRegWrite;
+    }
+
     set Branch(value){
         this.previousBranch = this.currentBranch;
         this.currentBranch = value;
@@ -108,7 +117,7 @@ export class StageIdEx extends StageObject {
 
     get ALUOp(){
         return this.previousALUOp;
-    }
+    }    
 
     set Rd(value){
         this.previousRd = this.currentRd;
